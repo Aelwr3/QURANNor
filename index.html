@@ -1,269 +1,379 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html dir="rtl" lang="ar">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>عاهدتُ القرآن</title>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --blue-dark: #002b4d;
-            --blue-light: #004c6d;
-            --gold: #FFD700;
-            --white: #FFFFFF;
-        }
-
-        /* الخلفية والأيقونات المتحركة */
-        body {
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, var(--blue-dark), var(--blue-light));
-            min-height: 100vh;
-            position: relative;
-            overflow: hidden;
             font-family: 'Amiri', serif;
         }
 
-        .floating-icons {
+        body {
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #00008B, #87CEEB);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* الخلفية المتحركة */
+        .background-icons {
             position: absolute;
             width: 100%;
             height: 100%;
             pointer-events: none;
         }
 
-        .floating-icons img {
+        .background-icons span {
             position: absolute;
-            animation: float 8s infinite linear;
-            opacity: 0.1;
+            font-size: 2em;
+            opacity: 0.2;
+            animation: float 8s infinite ease-in-out;
         }
 
         @keyframes float {
-            0% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(10deg); }
-            100% { transform: translateY(0) rotate(0deg); }
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(10deg); }
         }
 
-        /* العنوان مع الإطار المتحرك */
-        .title-container {
-            position: relative;
-            padding: 2rem;
-            margin-top: 4rem;
-            text-align: center;
-        }
-
+        /* إطار العنوان */
         .title-frame {
-            display: inline-block;
-            padding: 1rem 3rem;
-            border: 3px solid var(--white);
-            border-radius: 30px;
-            animation: frame-color 6s infinite alternate;
-        }
-
-        @keyframes frame-color {
-            0% { border-color: var(--white); }
-            50% { border-color: var(--blue-light); }
-            100% { border-color: var(--gold); }
-        }
-
-        .title {
-            font-size: 2.5rem;
-            color: var(--white);
-            margin: 0;
-        }
-
-        .subtitle {
-            color: rgba(255,255,255,0.9);
-            font-size: 1.2rem;
-            margin-top: 1rem;
-        }
-
-        /* نظام التقدم الذكي */
-        .progress-section {
+            position: relative;
+            text-align: center;
+            padding: 20px;
+            margin: 40px auto;
+            width: 85%;
             max-width: 600px;
-            margin: 3rem auto;
-            padding: 2rem;
-            background: rgba(0,0,0,0.2);
+            background: linear-gradient(45deg, #fff, #87CEEB, #FFD700);
+            background-size: 300% 300%;
+            animation: gradient 12s ease infinite;
             border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
         }
 
-        .progress-circle {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            margin: 0 auto;
-            background: conic-gradient(var(--gold) 0%, transparent 0%);
-            transition: all 0.5s ease;
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
+        h1 {
+            color: #2c3e50;
+            font-size: 2.8em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .description {
+            color: #34495e;
+            font-size: 1.3em;
+            margin: 15px 0;
+            line-height: 1.6;
+        }
+
+        /* إحصائيات المستخدم */
         .stats-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-top: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            padding: 30px;
+            margin: 40px auto;
+            max-width: 1300px;
         }
 
         .stat-box {
-            background: rgba(255,255,255,0.1);
-            padding: 1rem;
-            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 25px;
             text-align: center;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            color: white;
         }
 
-        /* زر متابعة القراءة */
-        .start-btn {
+        .progress-circle {
+            width: 160px;
+            height: 160px;
+            margin: 20px auto;
+            border-radius: 50%;
+            background: conic-gradient(#fff 0% 30%, transparent 30% 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .progress-text {
+            position: absolute;
+            font-size: 1.8em;
+            color: #fff;
+        }
+
+        /* الرسائل التحفيزية */
+        .motivational-message {
+            text-align: center;
+            padding: 25px;
+            margin: 30px auto;
+            width: 90%;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            color: #fff;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3em;
+            transition: opacity 0.5s ease;
+        }
+
+        /* زر المتابعة */
+        .start-button {
             display: block;
-            width: 80%;
-            max-width: 300px;
-            margin: 2rem auto;
-            padding: 1rem;
-            background: var(--gold);
-            color: var(--blue-dark);
+            width: 250px;
+            margin: 30px auto;
+            padding: 15px;
+            background: linear-gradient(45deg, #FFD700, #87CEEB);
+            color: #2c3e50;
             border: none;
             border-radius: 30px;
-            font-size: 1.2rem;
+            font-size: 1.3em;
             cursor: pointer;
-            transition: transform 0.3s;
+            transition: transform 0.3s ease;
         }
 
-        .start-btn:hover {
+        .start-button:hover {
             transform: scale(1.05);
         }
 
         /* القائمة الجانبية */
-        .menu-btn {
+        .side-menu {
             position: fixed;
-            top: 1rem;
-            left: 1rem;
-            background: none;
-            border: none;
-            color: var(--white);
-            font-size: 1.5rem;
+            top: 0;
+            left: -250px;
+            width: 250px;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            transition: 0.3s;
+            z-index: 1000;
+            padding: 20px;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .side-menu.active {
+            left: 0;
+        }
+
+        .menu-item {
+            padding: 15px;
+            margin: 10px 0;
+            background: rgba(135, 206, 235, 0.1);
+            border-radius: 8px;
             cursor: pointer;
-            z-index: 1000;
+            transition: 0.3s;
         }
 
-        .menu-content {
-            display: none;
+        .menu-item:hover {
+            background: rgba(135, 206, 235, 0.2);
+        }
+
+        /* رسالة الدعاء */
+        .prayer-message {
+            text-align: center;
+            padding: 25px;
+            color: #fff;
+            font-size: 1.2em;
+            margin-top: 50px;
+        }
+
+        /* رسالة التذكير */
+        .reminder-message {
             position: fixed;
-            top: 4rem;
-            left: 1rem;
-            background: rgba(0,0,0,0.8);
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px 25px;
             border-radius: 10px;
-            padding: 1rem;
-            z-index: 1000;
+            color: #2c3e50;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: none;
         }
 
-        .menu-content a {
-            display: block;
-            color: var(--white);
-            text-decoration: none;
-            padding: 0.5rem 1rem;
-            margin: 0.5rem 0;
-            border-radius: 5px;
-        }
-
-        .menu-content a:hover {
-            background: rgba(255,255,255,0.1);
+        @media (max-width: 768px) {
+            .title-frame {
+                width: 95%;
+                margin: 20px auto;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .description {
+                font-size: 1.1em;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- الأيقونات العائمة -->
-    <div class="floating-icons">
-        <img src="mosque-icon.png" style="top:10%; left:20%" width="50">
-        <img src="prayer-icon.png" style="top:30%; left:70%" width="40">
-        <img src="quran-icon.png" style="top:60%; left:10%" width="60">
+    <div class="background-icons">
+        <span style="top:10%; left:5%">🕋</span>
+        <span style="top:30%; right:15%">📜</span>
+        <span style="top:70%; left:20%">🌹</span>
+        <span style="top:50%; right:5%">🍃</span>
+        <span style="top:85%; right:25%">🕌</span>
     </div>
 
     <!-- القائمة الجانبية -->
-    <button class="menu-btn">☰</button>
-    <div class="menu-content">
-        <a href="settings.html">⚙️ الإعدادات</a>
-        <a href="information.html">📚 نبذة عن التطبيق</a>
-        <a href="notification.html">🔔 الإشعارات</a>
-        <a href="tafssir.html">📖 التفسير والتدبر</a>
+    <div class="nav-button" onclick="toggleMenu()">☰</div>
+    <div class="side-menu" id="sideMenu">
+        <div class="menu-item" onclick="navigate('settings.html')">الإعدادات</div>
+        <div class="menu-item" onclick="navigate('information.html')">عن التطبيق</div>
+        <div class="menu-item" onclick="navigate('notification.html')">الإشعارات</div>
+        <div class="menu-item" onclick="navigate('tafssir.html')">التفسير والتدبر</div>
     </div>
 
-    <!-- العنوان الرئيسي -->
-    <div class="title-container">
-        <div class="title-frame">
-            <h1 class="title">عاهدتُ القرآن</h1>
-            <p class="subtitle">منصة ذكية لختم القرآن الكريم بتدبر وتنظيم</p>
+    <!-- عنوان الموقع -->
+    <div class="title-frame">
+        <h1>عاهدتُ القرآن</h1>
+        <p class="description">منصة لتعاهد القرآن الكريم بتدبر وتمهل، نساعدك على تحقيق هدفك في ختم القرآن خلال الفترة التي تختارها</p>
+    </div>
+
+    <!-- الإحصائيات -->
+    <div class="stats-container">
+        <div class="stat-box">
+            <h3>نسبة الإنجاز</h3>
+            <div class="progress-circle">
+                <div class="progress-text">30%</div>
+            </div>
+        </div>
+
+        <div class="stat-box">
+            <h3>الأيام المتبقية</h3>
+            <div class="number">25 يوم</div>
+        </div>
+
+        <div class="stat-box">
+            <h3>الصفحات اليوم</h3>
+            <div class="number">5/20</div>
         </div>
     </div>
 
-    <!-- نظام التقدم -->
-    <div class="progress-section">
-        <div class="progress-circle" id="progressCircle"></div>
-        
-        <div class="stats-container">
-            <div class="stat-box">
-                <h3>الأيام المتبقية</h3>
-                <p id="daysLeft">30 يوم</p>
-            </div>
-            <div class="stat-box">
-                <h3>الصفحات اليومية</h3>
-                <p id="dailyPages">21 صفحة</p>
-            </div>
-        </div>
+    <!-- رسالة تحفيزية -->
+    <div class="motivational-message" id="message">
+        "وَقَالَ رَبُّكُمُ ادْعُونِي أَسْتَجِبْ لَكُمْ"
     </div>
 
     <!-- زر البدء -->
-    <button class="start-btn" onclick="startReading()">📖 ابدأ القراءة الآن</button>
+    <button class="start-button" onclick="startReading()">متابعة القراءة</button>
 
-    <!-- الرسائل التحفيزية -->
-    <div class="motivational-box" id="motivationalText"></div>
+    <!-- رسالة الدعاء -->
+    <div class="prayer-message">
+        اللهم اجعل القرآن ربيع قلوبنا ونور صدورنا وجلاء أحزاننا
+    </div>
 
-    <!-- الدعاء -->
-    <div class="dua-section">
-        <p>اللهم اجعل القرآن ربيع قلوبنا، ونور أبصارنا، وجلاء أحزاننا</p>
+    <!-- رسالة التذكير -->
+    <div class="reminder-message" id="reminder">
+        خُذْ وقتَك في التدبر، فالعجلة تُذهب البركة
     </div>
 
     <script>
-        // نظام التقدم الذكي
-        let totalDays = 30;
-        let currentDay = 0;
-
-        function calculateProgress() {
-            const progress = (currentDay / totalDays) * 100;
-            document.getElementById('progressCircle').style.background = 
-                `conic-gradient(var(--gold) ${progress}%, transparent ${progress}%)`;
-            
-            document.getElementById('daysLeft').textContent = `${totalDays - currentDay} يوم`;
-            document.getElementById('dailyPages').textContent = `${Math.ceil(604 / totalDays)} صفحة`;
+        // بيانات المستخدم
+        let userData = {
+            totalPages: 604,
+            targetDays: 30,
+            readPages: 150,
+            startDate: new Date()
         }
 
         // الرسائل التحفيزية
         const messages = [
-            "﴿وَلَقَدْ يَسَّرْنَا الْقُرْآنَ لِلذِّكْرِ فَهَلْ مِن مُّدَّكِرٍ﴾",
+            "مَن قرأ حرفًا من كتاب الله فله به حسنة، والحسنة بعشر أمثالها",
             "خيركم من تعلم القرآن وعلمه",
-            "القرآن نور الدنيا وشفاء الصدور",
-            "لا تشغلنَّ بالدنيا عن وردك اليومي"
+            "إن الله يرفع بهذا الكتاب أقواماً ويضع به آخرين",
+            "اقرأوا القرآن فإنه يأتي يوم القيامة شفيعاً لأصحابه",
+            "القرآن أفضل الذكر فاقرؤوه واذكروا الله"
         ];
 
-        function showMotivationalMessage() {
-            const randomIndex = Math.floor(Math.random() * messages.length);
-            document.getElementById('motivationalText').textContent = messages[randomIndex];
-            setTimeout(showMotivationalMessage, 5000);
+        // نظام الرسائل
+        let currentMessage = 0;
+        setInterval(() => {
+            document.getElementById('message').style.opacity = 0;
+            setTimeout(() => {
+                document.getElementById('message').textContent = messages[currentMessage];
+                document.getElementById('message').style.opacity = 1;
+                currentMessage = (currentMessage + 1) % messages.length;
+            }, 500);
+        }, 5000);
+
+        // تحديث الإحصائيات
+        function updateStats() {
+            const progress = (userData.readPages / userData.totalPages * 100).toFixed(1);
+            document.querySelector('.progress-text').textContent = `${progress}%`;
+            document.querySelector('.progress-circle').style.background = 
+                `conic-gradient(#fff 0% ${progress}%, transparent ${progress}% 100%)`;
         }
 
         // نظام القراءة الذكي
         function startReading() {
-            const pagesPerSession = Math.ceil(604 / totalDays / 4);
-            window.location.href = `reading.html?pages=${pagesPerSession}`;
+            const pagesPerDay = Math.ceil(userData.totalPages / userData.targetDays);
+            const sessionPages = Math.ceil(pagesPerDay / 4);
+            
+            // التحقق من الوقت المناسب للقراءة
+            const now = new Date();
+            const hours = now.getHours();
+            
+            // تقسيم اليوم إلى 4 فترات
+            if(hours >= 5 && hours < 11) {
+                startSession(sessionPages, 'الصباح');
+            } else if(hours >= 11 && hours < 16) {
+                startSession(sessionPages, 'الظهر');
+            } else if(hours >= 16 && hours < 21) {
+                startSession(sessionPages, 'المساء');
+            } else {
+                startSession(sessionPages, 'الليل');
+            }
+        }
+
+        function startSession(pages, time) {
+            // التحقق من الوقت المستغرق
+            let lastPageTime = Date.now();
+            
+            // نظام التذكير بالتدبر
+            window.addEventListener('beforeunload', (e) => {
+                if(Date.now() - lastPageTime < 180000) { // 3 دقائق
+                    showReminder();
+                    e.preventDefault();
+                    e.returnValue = '';
+                }
+            });
+
+            // توجيه المستخدم لصفحة القراءة
+            window.location.href = `quran.html?pages=${pages}&time=${time}`;
+        }
+
+        function showReminder() {
+            const reminder = document.getElementById('reminder');
+            reminder.style.display = 'block';
+            setTimeout(() => {
+                reminder.style.display = 'none';
+            }, 5000);
         }
 
         // إدارة القائمة
-        document.querySelector('.menu-btn').addEventListener('click', () => {
-            document.querySelector('.menu-content').style.display = 
-                document.querySelector('.menu-content').style.display === 'block' ? 'none' : 'block';
-        });
+        function toggleMenu() {
+            document.getElementById('sideMenu').classList.toggle('active');
+        }
+
+        function navigate(page) {
+            window.location.href = page;
+        }
 
         // التهيئة الأولية
-        window.onload = () => {
-            calculateProgress();
-            showMotivationalMessage();
-        };
+        updateStats();
     </script>
 </body>
 </html>
