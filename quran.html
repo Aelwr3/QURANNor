@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تلاوة القرآن الكريم</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: linear-gradient(45deg, #00008B, #87CEEB);
+            font-family: 'Amiri', serif;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            padding: 30px;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .nav-button {
+            background: #87CEEB;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s;
+        }
+
+        .nav-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-info {
+            text-align: center;
+            font-size: 1.2em;
+            color: #2c3e50;
+        }
+
+        .quran-text {
+            font-size: 1.8em;
+            line-height: 2.5;
+            text-align: justify;
+            margin: 20px 0;
+            min-height: 500px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+        }
+
+        .timer {
+            text-align: center;
+            font-size: 1.2em;
+            color: #2c3e50;
+            margin-top: 20px;
+        }
+
+        .reminder {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #fff;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .quran-text {
+                font-size: 1.4em;
+                line-height: 2;
+                min-height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="navigation">
+            <button class="nav-button" onclick="previousPage()" id="prevBtn">السابق</button>
+            <div class="page-info">
+                <span id="currentPage">الصفحة 1</span>
+                <br>
+                <span id="surahName">سورة الفاتحة</span>
+            </div>
+            <button class="nav-button" onclick="nextPage()" id="nextBtn">التالي</button>
+        </div>
+
+        <div class="quran-text" id="quranContent"></div>
+
+        <div class="timer">
+            وقت التلاوة: <span id="timer">00:00:00</span>
+        </div>
+    </div>
+
+    <div class="reminder" id="reminder">
+        ⚠️ خُذْ وقتك في التدبر والترتيل
+    </div>
+
+    <script>
+        // بيانات القرآن من ملف JSON محلي
+        const quranData = {
+            "totalPages": 604,
+            "pages": {
+                "1": {
+                    "content": "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ الرَّحْمَٰنِ الرَّحِيمِ مَالِكِ يَوْمِ الدِّينِ إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ",
+                    "surah": "الفاتحة",
+                    "juz": 1
+                },
+                "2": {
+                    "content": "الم ذَٰلِكَ الْكِتَابُ لَا رَيْبَ ۛ فِيهِ ۛ هُدًى لِّلْمُتَّقِينَ الَّذِينَ يُؤْمِنُونَ بِالْغَيْبِ وَيُقِيمُونَ الصَّلَاةَ وَمِمَّا رَزَقْنَاهُمْ يُنفِقُونَ وَالَّذِينَ يُؤْمِنُونَ بِمَا أُنزِلَ إِلَيْكَ وَمَا أُنزِلَ مِن قَبْلِكَ وَبِالْآخِرَةِ هُمْ يُوقِنُونَ أُولَٰئِكَ عَلَىٰ هُدًى مِّن رَّبِّهِمْ ۖ وَأُولَٰئِكَ هُمُ الْمُفْلِحُونَ",
+                    "surah": "البقرة",
+                    "juz": 1
+                }
+                // يمكن إضافة بقية الصفحات بنفس الطريقة
+            }
+        };
+
+        // حالة التطبيق
+        let currentPage = 1;
+        let startTime = Date.now();
+        let timerInterval;
+        let pageTimes = {};
+        const minPageTime = 180000; // 3 دقائق بالمللي ثانية
+
+        // تهيئة الصفحة
+        function init() {
+            loadPage(currentPage);
+            startTimer();
+            loadProgress();
+        }
+
+        // تحميل الصفحة
+        function loadPage(page) {
+            const pageData = quranData.pages[page];
+            if (!pageData) return;
+
+            document.getElementById('quranContent').innerHTML = pageData.content;
+            document.getElementById('currentPage').textContent = `الصفحة ${page}`;
+            document.getElementById('surahName').textContent = `سورة ${pageData.surah}`;
+            
+            // تتبع وقت الصفحة
+            pageTimes[page] = Date.now();
+        }
+
+        // نظام التوقيت
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                const elapsed = Date.now() - startTime;
+                document.getElementById('timer').textContent = 
+                    new Date(elapsed).toISOString().substr(11, 8);
+            }, 1000);
+        }
+
+        // إدارة التنقل بين الصفحات
+        function nextPage() {
+            if (checkReadingTime()) {
+                currentPage++;
+                saveProgress();
+                loadPage(currentPage);
+            }
+        }
+
+        function previousPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                saveProgress();
+                loadPage(currentPage);
+            }
+        }
+
+        // التحقق من وقت القراءة
+        function checkReadingTime() {
+            const timeSpent = Date.now() - pageTimes[currentPage];
+            if (timeSpent < minPageTime) {
+                showReminder();
+                return false;
+            }
+            return true;
+        }
+
+        function showReminder() {
+            const reminder = document.getElementById('reminder');
+            reminder.style.display = 'block';
+            setTimeout(() => {
+                reminder.style.display = 'none';
+            }, 3000);
+        }
+
+        // حفظ التقدم
+        function saveProgress() {
+            localStorage.setItem('quranProgress', JSON.stringify({
+                currentPage: currentPage,
+                startTime: startTime
+            }));
+        }
+
+        function loadProgress() {
+            const saved = JSON.parse(localStorage.getItem('quranProgress'));
+            if (saved) {
+                currentPage = saved.currentPage;
+                startTime = saved.startTime;
+            }
+        }
+
+        // تهيئة التطبيق
+        window.onload = init;
+    </script>
+</body>
+</html>
